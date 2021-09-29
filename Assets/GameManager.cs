@@ -50,26 +50,31 @@ public class GameManager : MonoBehaviour
 
         ElapsedTimeFromStart = 0f;
         var elapsedTime = 0f;
-
+        var nextMove = 0f;
+        var moveDelta = 0.5f;
         while (ElapsedTimeFromStart <= MaxElapsedTimeFromStart)
         {
             ElapsedTimeFromStart += Time.deltaTime;
             elapsedTime += Time.deltaTime;
-
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            var MovementHorizon = Input.GetAxisRaw("Horizontal");
+            var MovementVertical = Input.GetAxisRaw("Vertical");
+            if (MovementHorizon < 0 && elapsedTime > nextMove)
             {
+                nextMove = elapsedTime + moveDelta;
                 MoveTileLeft(tiles, tile);
             }
 
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (MovementHorizon > 0 && elapsedTime > nextMove)
             {
+                nextMove = elapsedTime + moveDelta;
                 MoveTileRight(tiles, tile);
             }
 
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (MovementVertical < 0 && elapsedTime > nextMove)
             {
                 if (!MoveTileDown(tiles, tile))
                 {
+                    nextMove = elapsedTime + moveDelta;
                     tile = CreateNewTile(tiles);
 
                     if (tile == null) break;
@@ -84,8 +89,9 @@ public class GameManager : MonoBehaviour
 
                     if (tile == null) break;
                 }
-
+                nextMove = nextMove - elapsedTime;
                 elapsedTime = 0;
+                
             }
 
             yield return null;
