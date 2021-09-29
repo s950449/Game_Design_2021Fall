@@ -39,10 +39,18 @@ public class GameManager : MonoBehaviour
     {
         while (true)
         {
+            yield return MainMenu();
             yield return PlayGame();
         }
     }
-
+    private IEnumerator MainMenu()
+    {
+        if (Input.anyKey)
+        {
+            Debug.Log("Input Event\n");
+            yield return null;
+        }
+    }
     private IEnumerator PlayGame()
     {
         var tiles = new List<Tile>();
