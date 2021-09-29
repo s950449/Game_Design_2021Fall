@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
 
     private float _elapsedTimeFromStart;
 
+    private List<Color> tileColor = new List<Color> { Color.white, Color.red, Color.green, Color.blue };
     private float ElapsedTimeFromStart
     {
         get => _elapsedTimeFromStart;
@@ -45,7 +46,6 @@ public class GameManager : MonoBehaviour
     private IEnumerator PlayGame()
     {
         var tiles = new List<Tile>();
-
         var tile = CreateNewTile(tiles);
 
         ElapsedTimeFromStart = 0f;
@@ -113,8 +113,9 @@ public class GameManager : MonoBehaviour
     {
         if (tiles.Any(other => other.X == MiddleX && other.Y == Top))
             return null;
-
         var tile = Instantiate(_tilePrefab, _boardRoot);
+        var m_color = Random.Range(0, tileColor.Count);
+        tile.ChangeTileColor(tileColor[m_color],m_color);
         tile.X = MiddleX;
         tile.Y = Top;
         return tile;

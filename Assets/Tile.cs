@@ -12,7 +12,8 @@ public class Tile : MonoBehaviour
     [SerializeField] private ParticleSystem _hitEffect;
 
     [SerializeField] private AudioSource _hitSource;
-    
+
+    [SerializeField] private int _tileType;
     public int X
     {
         get => _x;
@@ -38,12 +39,27 @@ public class Tile : MonoBehaviour
             transform.localPosition = pos;
         }
     }
+    public int tileType
+    {
+        get => _tileType;
+        set
+        {
+            _tileType = 0;
+        }
 
+
+    }
     public void Hit()
     {
         _hitSource.Play();
         _hitEffect.Play();
         StartCoroutine(Shake());
+    }
+    public void ChangeTileColor(Color m_color,int m_idx)
+    {
+        _spriteRenderer.color = m_color;
+        _tileType = m_idx;
+
     }
 
     private IEnumerator Shake()
