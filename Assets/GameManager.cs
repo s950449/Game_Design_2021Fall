@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Transform _boardRoot;
 
-    [SerializeField] private Tile _tilePrefab;
+    [SerializeField] private Tile[] _tilePrefab;
 
     [SerializeField] private Text _elapsedTimeFromStartText;
 
@@ -121,7 +121,7 @@ public class GameManager : MonoBehaviour
     {
         if (tiles.Any(other => other.X == MiddleX && other.Y == Top))
             return null;
-        var tile = Instantiate(_tilePrefab, _boardRoot);
+        var tile = Instantiate(_tilePrefab[Random.Range(0,_tilePrefab.Length)], _boardRoot);
         var m_color = Random.Range(0, tileColor.Count);
         tile.ChangeTileColor(tileColor[m_color],m_color);
         tile.X = MiddleX;
@@ -165,7 +165,7 @@ public class GameManager : MonoBehaviour
         {
             for (var y = 0; y < Height; y++)
             {
-                var tile = Instantiate(_tilePrefab, _boardRoot);
+                var tile = Instantiate(_tilePrefab[Random.Range(0, _tilePrefab.Length)], _boardRoot);
                 tile.X = x;
                 tile.Y = y;
             }
