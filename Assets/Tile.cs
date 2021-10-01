@@ -59,7 +59,6 @@ public class Tile : MonoBehaviour
     {
         _spriteRenderer.color = m_color;
         _tileType = m_idx;
-
     }
 
     private IEnumerator Shake()

@@ -175,6 +175,7 @@ MonoBehaviour:
   - {fileID: 7545486179993340553, guid: ef1a8e3014ce5bb4d924f5ce1d106b3c, type: 3}
   - {fileID: 7545486179993340553, guid: 62021f2cb8433ba49afb9afed768e40d, type: 3}
   - {fileID: 7545486179993340553, guid: 3e935e7ba744d8947b5c526620b52c34, type: 3}
+  - {fileID: 7545486179993340553, guid: 2831bb5d99f28524fb96fcf9eefd68aa, type: 3}
   _elapsedTimeFromStartText: {fileID: 1415838732}
 --- !u!82 &6684304
 AudioSource:

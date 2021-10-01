@@ -123,7 +123,14 @@ public class GameManager : MonoBehaviour
             return null;
         var tile = Instantiate(_tilePrefab[Random.Range(0,_tilePrefab.Length)], _boardRoot);
         var m_color = Random.Range(0, tileColor.Count);
-        tile.ChangeTileColor(tileColor[m_color],m_color);
+
+        SpriteRenderer[] m_sprites = tile.GetComponentsInChildren<SpriteRenderer>();
+        foreach(SpriteRenderer s in m_sprites)
+        {
+            s.color = tileColor[m_color];
+        }
+        //tile.ChangeTileColor(tileColor[m_color], m_color);
+        //tile.ChangeTileColor(tileColor[m_color],m_color);
         tile.X = MiddleX;
         tile.Y = Top;
         return tile;
