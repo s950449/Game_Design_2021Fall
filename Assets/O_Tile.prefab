@@ -5313,9 +5313,9 @@ MonoBehaviour:
   _spriteRenderer: {fileID: 4568898256457904867}
   _hitEffect: {fileID: 1009339154697167095}
   _hitSource: {fileID: 6083114686770256890}
-  _tileType: 0
+  _tileType: -1
   _offset:
+  - {x: 0, y: 0}
   - {x: 1, y: 0}
   - {x: 1, y: 1}
   - {x: 0, y: 1}
-  - {x: 0, y: 0}

@@ -11,10 +11,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Tile[] _tilePrefab;
 
     [SerializeField] private Text _elapsedTimeFromStartText;
-
+    public Vector3 rotationPoint;
     private const int Width = 6;
     private const int Height = 10;
-
     private const int MiddleX = Width / 2;
     private const int Top = Height - 1;
 
@@ -88,6 +87,13 @@ public class GameManager : MonoBehaviour
                     if (tile == null) break;
                 }
             }
+            if(MovementVertical > 0 && elapsedTime > nextMove)
+            {
+                nextMove = elapsedTime + moveDelta * 1.7f;
+                Rotate(tiles, tile);
+
+
+            }
             
             if (elapsedTime >= MaxElapsedTimePerStep)
             {
@@ -145,33 +151,63 @@ public class GameManager : MonoBehaviour
         tile.Y = Top;
         return tile;
     }
-    private static bool CanTileMoveTo(IEnumerable<Tile> tiles, Tile tile, int dx, int dy, int width)
+    private bool CanTileMoveTo(IEnumerable<Tile> tiles, Tile tile, int dx, int dy, int width)
     {
         if (!tile.checkBound(dx, dy, width))
         {
             return false;
         }
-        Debug.Log(tile.X + dx);
-        Debug.Log(tile.Y + dy);
+        //Debug.Log(tile.X + dx);
+        //Debug.Log(tile.Y + dy);
         bool ret = true;
         foreach (Vector2Int child in tile.offset)
         {
-            ret = ret & (!tiles.Any(other => other.check(tile.X + dx + child.x, tile.Y + dy + child.y)));
+            
+            ret = ret & (!tiles.Any(other => other.check(tile.X + dx + child.x, tile.Y + dy + child.y,width)));
         }
         return ret;
     }
-    private static void MoveTileLeft(IEnumerable<Tile> tiles, Tile tile)
+    private  void MoveTileLeft(IEnumerable<Tile> tiles, Tile tile)
     {
         if (!CanTileMoveTo(tiles, tile, -1,0,Width)) return;
         tile.X--;
     }
-    private static void MoveTileRight(IEnumerable<Tile> tiles, Tile tile)
+    private  void MoveTileRight(IEnumerable<Tile> tiles, Tile tile)
     {
         if (!CanTileMoveTo(tiles, tile,1,0, Width)) return;
         tile.X++;
     }
+    private  void Rotate(IEnumerable<Tile>tiles,Tile tile)
+    {
+        if (tile.tileType == -1)
+        {
+            return;
+        }
+        Tile tmp = new Tile();
+        tmp = tile;
+        for (int i = 0; i < tmp.offset.Count; i++)
+        {
+            int tmpX = tmp.offset[i].x;
+            int tmpY = tmp.offset[i].y;
+            Debug.Log("A");
+            Debug.Log(tmp.offset[i]);
+            tmp.offset[i] = new Vector2Int(-tmpY, tmpX);
+            Debug.Log("B");
+            Debug.Log(tmp.offset[i]);
+        }
+        foreach (Transform child in tmp.transform)
+        {
+            var pos = child.localPosition;
+            child.localPosition = new Vector3(-pos.y, pos.x);
+        }
+        if (!CanTileMoveTo(tiles, tmp, 0, 0, Width))
+        {
+            return;
+        }
 
-    private static bool MoveTileDown(ICollection<Tile> tiles, Tile tile)
+        tile = tmp;
+    }
+    private  bool MoveTileDown(ICollection<Tile> tiles, Tile tile)
     {
         if (CanTileMoveTo(tiles, tile,0,-1, Width))
         {
@@ -183,6 +219,7 @@ public class GameManager : MonoBehaviour
         tiles.Add(tile);
         return false;
     }
+
     public void Fill()
     {
         for (var x = 0; x < Width; x++)

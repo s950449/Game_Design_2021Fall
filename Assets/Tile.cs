@@ -70,10 +70,37 @@ public class Tile : MonoBehaviour
         _spriteRenderer.color = m_color;
         _tileType = m_idx;
     }
-    public bool check(int x,int y)
+    public IEnumerator RotateOffset()
     {
-        Debug.Log(x);
-        Debug.Log(y);
+        for (int i = 0; i < _offset.Count; i++)
+        {
+            int tmpX = _offset[i].x;
+            int tmpY = _offset[i].y;
+            Debug.Log("A");
+            Debug.Log(_offset[i]);
+            _offset[i] = new Vector2Int(-tmpY, tmpX);
+            Debug.Log("B");
+            Debug.Log(_offset[i]);
+        }
+        yield return null;
+    }
+    public IEnumerator Rotate()
+    {
+        foreach(Transform child in transform) 
+        {
+            var pos = child.localPosition;
+            child.localPosition = new Vector3(-pos.y, pos.x);
+        }
+        yield return null;
+    }
+    public bool check(int x,int y,int width)
+    {
+        if(x < 0 || x >= width || y < 0)
+        {
+            return true;
+        }
+        //Debug.Log(x);
+        //Debug.Log(y);
         foreach(Vector2Int child in offset)
         {
             if(_x+child.x == x && _y + child.y == y)
