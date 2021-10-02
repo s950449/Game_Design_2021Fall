@@ -5314,3 +5314,8 @@ MonoBehaviour:
   _hitEffect: {fileID: 1009339154697167095}
   _hitSource: {fileID: 6083114686770256890}
   _tileType: 0
+  _offset:
+  - {x: 1, y: 0}
+  - {x: -2, y: 0}
+  - {x: -1, y: 0}
+  - {x: 0, y: 0}

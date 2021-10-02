@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
@@ -14,6 +15,7 @@ public class Tile : MonoBehaviour
     [SerializeField] private AudioSource _hitSource;
 
     [SerializeField] private int _tileType;
+    [SerializeField] private List<Vector2Int> _offset;
     public int X
     {
         get => _x;
@@ -49,6 +51,14 @@ public class Tile : MonoBehaviour
 
 
     }
+    public List<Vector2Int> offset
+    {
+        get => _offset;
+        set
+        {
+            _offset = value;
+        }
+    }
     public void Hit()
     {
         _hitSource.Play();
@@ -60,7 +70,30 @@ public class Tile : MonoBehaviour
         _spriteRenderer.color = m_color;
         _tileType = m_idx;
     }
-
+    public bool check(int x,int y)
+    {
+        Debug.Log(x);
+        Debug.Log(y);
+        foreach(Vector2Int child in offset)
+        {
+            if(_x+child.x == x && _y + child.y == y)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    public bool checkBound(int dx,int dy,int x)
+    {
+        foreach (Vector2Int child in offset)
+        {
+            if (_x + child.x + dx< 0 || _y + child.y + dy < 0 || _x +child.x +dx >= x)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
     private IEnumerator Shake()
     {
         var beginTime = Time.realtimeSinceStartup;

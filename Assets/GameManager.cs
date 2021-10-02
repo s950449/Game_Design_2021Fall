@@ -119,8 +119,18 @@ public class GameManager : MonoBehaviour
     }
     private Tile CreateNewTile(IEnumerable<Tile> tiles)
     {
-        if (tiles.Any(other => other.X == MiddleX && other.Y == Top))
-            return null;
+        foreach(Tile child in tiles)
+        {
+           foreach(Vector2Int offset in child.offset)
+            {
+                if(child.X + offset.x == MiddleX && child.Y + offset.y == Top)
+                {
+                    return null;
+                }
+            }
+        }
+        //if (tiles.Any(other => other.X == MiddleX && other.Y == Top))
+            //return null;
         var tile = Instantiate(_tilePrefab[Random.Range(0,_tilePrefab.Length)], _boardRoot);
         var m_color = Random.Range(0, tileColor.Count);
 
@@ -135,28 +145,35 @@ public class GameManager : MonoBehaviour
         tile.Y = Top;
         return tile;
     }
-    private static bool CanTileMoveTo(IEnumerable<Tile> tiles, int x, int y, int width)
+    private static bool CanTileMoveTo(IEnumerable<Tile> tiles, Tile tile, int dx, int dy, int width)
     {
-        if (x < 0 || x >= width || y < 0)
+        if (!tile.checkBound(dx, dy, width))
+        {
             return false;
-
-        return !tiles.Any(other => other.X == x && other.Y == y);
+        }
+        Debug.Log(tile.X + dx);
+        Debug.Log(tile.Y + dy);
+        bool ret = true;
+        foreach (Vector2Int child in tile.offset)
+        {
+            ret = ret & (!tiles.Any(other => other.check(tile.X + dx + child.x, tile.Y + dy + child.y)));
+        }
+        return ret;
     }
-
     private static void MoveTileLeft(IEnumerable<Tile> tiles, Tile tile)
     {
-        if (!CanTileMoveTo(tiles, tile.X - 1, tile.Y, Width)) return;
+        if (!CanTileMoveTo(tiles, tile, -1,0,Width)) return;
         tile.X--;
     }
     private static void MoveTileRight(IEnumerable<Tile> tiles, Tile tile)
     {
-        if (!CanTileMoveTo(tiles, tile.X + 1, tile.Y, Width)) return;
+        if (!CanTileMoveTo(tiles, tile,1,0, Width)) return;
         tile.X++;
     }
 
     private static bool MoveTileDown(ICollection<Tile> tiles, Tile tile)
     {
-        if (CanTileMoveTo(tiles, tile.X, tile.Y - 1, Width))
+        if (CanTileMoveTo(tiles, tile,0,-1, Width))
         {
             tile.Y--;
             return true;
