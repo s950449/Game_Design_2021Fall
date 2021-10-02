@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform _boardRoot;
 
     [SerializeField] private Tile _tilePrefab;
-
+    [SerializeField] private Terminoes _terminoesPrefab;
     [SerializeField] private Text _elapsedTimeFromStartText;
 
     private const int Width = 6;
@@ -121,11 +121,14 @@ public class GameManager : MonoBehaviour
     {
         if (tiles.Any(other => other.X == MiddleX && other.Y == Top))
             return null;
-        var tile = Instantiate(_tilePrefab, _boardRoot);
+        var terminoes = Instantiate(_terminoesPrefab, _boardRoot);
+        terminoes.pos.Set(MiddleX, Top);
+
+       // var tile = Instantiate(_tilePrefab, _boardRoot);
         var m_color = Random.Range(0, tileColor.Count);
         tile.ChangeTileColor(tileColor[m_color],m_color);
-        tile.X = MiddleX;
-        tile.Y = Top;
+       // tile.X = MiddleX;
+       // tile.Y = Top;
         return tile;
     }
     private static bool CanTileMoveTo(IEnumerable<Tile> tiles, int x, int y, int width)
