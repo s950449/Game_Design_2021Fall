@@ -27,6 +27,7 @@ public class PauseMenu : MonoBehaviour
                 Pause();
             }
         }
+
     }
     public void Resume()
     {
@@ -41,6 +42,12 @@ public class PauseMenu : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(pauseFirstSelect);
         Time.timeScale = 0;
         GamePaused = true;
+    }
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+        Time.timeScale = 1;
+        GamePaused = false;
     }
     public void Restart()
     {

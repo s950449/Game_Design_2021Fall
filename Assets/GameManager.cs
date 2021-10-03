@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -55,13 +56,13 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator GameOver()
     {
-        if (Input.anyKey)
-        {
-            yield return null;
-        }
+        PassingValue.score = Score;
+        SceneManager.LoadScene("GameOver");
+        yield return null;
     }
     private IEnumerator MainMenu()
     {
+        
         if (Input.anyKey)
         {
             Debug.Log("Input Event\n");
@@ -72,6 +73,7 @@ public class GameManager : MonoBehaviour
     {
         var tiles = new List<Tile>();
         var tile = CreateNewTile(tiles);
+        Time.timeScale = 1;
         Score = 0;
         ElapsedTimeFromStart = 0f;
         var elapsedTime = 0f;
