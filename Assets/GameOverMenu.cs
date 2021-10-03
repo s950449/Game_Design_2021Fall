@@ -19,6 +19,8 @@ public class GameOverMenu : MonoBehaviour
         CarrierObject = GameObject.Find("persistentObject");
         score = PassingValue.score;
         _scoreText.text = score.ToString();
+        Destroy(CarrierObject);
+        Destroy(GameObject.Find("PassingValue"));
         alreadyOver = false;
     }
     private void Update()
