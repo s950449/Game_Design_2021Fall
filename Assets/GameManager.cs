@@ -83,19 +83,19 @@ public class GameManager : MonoBehaviour
             elapsedTime += Time.deltaTime;
             var MovementHorizon = Input.GetAxisRaw("Horizontal");
             var MovementVertical = Input.GetAxisRaw("Vertical");
-            if (MovementHorizon < 0 && elapsedTime > nextMove)
+            if (MovementHorizon < 0 && elapsedTime > nextMove && PauseMenu.GamePaused == false)
             {
                 nextMove = elapsedTime + moveDelta;
                 MoveTileLeft(tiles, tile);
             }
 
-            if (MovementHorizon > 0 && elapsedTime > nextMove)
+            if (MovementHorizon > 0 && elapsedTime > nextMove && PauseMenu.GamePaused == false)
             {
                 nextMove = elapsedTime + moveDelta;
                 MoveTileRight(tiles, tile);
             }
 
-            if (MovementVertical < 0 && elapsedTime > nextMove)
+            if (MovementVertical < 0 && elapsedTime > nextMove && PauseMenu.GamePaused == false)
             {
                 if (!MoveTileDown(tiles, tile))
                 {
@@ -184,9 +184,9 @@ public class GameManager : MonoBehaviour
         if(rainbow == Width)
         {
             rewardScore = 300;
-            count = Width - 1;
+            count = Width;
         }
-        if(count != Width - 1)
+        if(count != Width)
         {
             return false;
         }
