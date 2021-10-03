@@ -22,8 +22,7 @@ public class GameManager : MonoBehaviour
     private const float MaxElapsedTimeFromStart = 60f;
 
     private float _elapsedTimeFromStart;
-
-    private List<Color> tileColor = new List<Color> { Color.white, Color.red, Color.green, Color.blue };
+    private List<Color> tileColor = new List<Color> { Color.white, Color.red, Color.green, Color.blue,Color.yellow,Color.cyan};
     private float ElapsedTimeFromStart
     {
         get => _elapsedTimeFromStart;
@@ -55,7 +54,6 @@ public class GameManager : MonoBehaviour
     {
         var tiles = new List<Tile>();
         var tile = CreateNewTile(tiles);
-
         ElapsedTimeFromStart = 0f;
         var elapsedTime = 0f;
         var nextMove = 0f;
@@ -101,7 +99,14 @@ public class GameManager : MonoBehaviour
                 elapsedTime = 0;
                 
             }
+            if(checkRow(tiles, tile))
+            {
+                tile = CreateNewTile(tiles);
 
+                if (tile == null) break;
+                nextMove = nextMove - elapsedTime;
+                elapsedTime = 0;
+            }
             yield return null;
         }
     
@@ -123,6 +128,7 @@ public class GameManager : MonoBehaviour
             return null;
         var tile = Instantiate(_tilePrefab, _boardRoot);
         var m_color = Random.Range(0, tileColor.Count);
+        tile.tileType = m_color;
         tile.ChangeTileColor(tileColor[m_color],m_color);
         tile.X = MiddleX;
         tile.Y = Top;
@@ -135,7 +141,61 @@ public class GameManager : MonoBehaviour
 
         return !tiles.Any(other => other.X == x && other.Y == y);
     }
-
+    private bool checkRow(List<Tile>tiles,Tile cur)
+    {
+        var count = 0;
+        var rainbow = 0;
+        bool[] checkList = new bool[tileColor.Count];
+        checkList[cur.tileType] = true;
+        List<int> idx = new List<int>();
+        foreach(Tile tile in tiles)
+        {
+            if(tile.Y == cur.Y)
+            {
+                if(tile.tileType == cur.tileType)
+                    count++;
+                else
+                {
+                    checkList[tile.tileType] = true;
+                }
+            }
+        }
+        for(int i=0;i< checkList.Length; i++)
+        {
+            if (checkList[i])
+            {
+                rainbow++;
+            }
+        }
+        if(rainbow == Width)
+        {
+            count = Width - 1;
+        }
+        if(count != Width - 1)
+        {
+            return false;
+        }
+        for(int i = 0;i <tiles.Count;i++)
+        {
+            if(tiles[i].Y == cur.Y)
+            {
+                Destroy(tiles[i]?.gameObject);
+                idx.Add(i);
+            }
+        }
+        Destroy(cur?.gameObject);
+        foreach(Tile tile in tiles)
+        {
+            if(tile.Y > cur.Y)
+                tile.Y--;
+        }
+        idx.Reverse();
+        foreach(int i in idx)
+        {
+            tiles.RemoveAt(i);
+        }
+        return true;
+    }
     private static void MoveTileLeft(IEnumerable<Tile> tiles, Tile tile)
     {
         if (!CanTileMoveTo(tiles, tile.X - 1, tile.Y, Width)) return;

@@ -44,7 +44,7 @@ public class Tile : MonoBehaviour
         get => _tileType;
         set
         {
-            _tileType = 0;
+            _tileType = value;
         }
 
 
