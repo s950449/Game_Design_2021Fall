@@ -11,10 +11,20 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Tile _tilePrefab;
 
     [SerializeField] private Text _elapsedTimeFromStartText;
-
+    [SerializeField] private AudioSource _removeRow;
+    [SerializeField] private Text _ScoreText;
     private const int Width = 6;
     private const int Height = 10;
-
+    private int _score = 0;
+    private int Score
+    {
+        get => _score;
+        set
+        {
+            _score = value;
+            _ScoreText.text = _score.ToString();
+        }
+    }
     private const int MiddleX = Width / 2;
     private const int Top = Height - 1;
 
@@ -36,10 +46,18 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator Start()
     {
+        yield return MainMenu();
         while (true)
         {
-            yield return MainMenu();
             yield return PlayGame();
+            yield return GameOver();
+        }
+    }
+    private IEnumerator GameOver()
+    {
+        if (Input.anyKey)
+        {
+            yield return null;
         }
     }
     private IEnumerator MainMenu()
@@ -54,6 +72,7 @@ public class GameManager : MonoBehaviour
     {
         var tiles = new List<Tile>();
         var tile = CreateNewTile(tiles);
+        Score = 0;
         ElapsedTimeFromStart = 0f;
         var elapsedTime = 0f;
         var nextMove = 0f;
@@ -80,6 +99,7 @@ public class GameManager : MonoBehaviour
             {
                 if (!MoveTileDown(tiles, tile))
                 {
+                    checkRow(tiles, tile);
                     nextMove = elapsedTime + moveDelta;
                     tile = CreateNewTile(tiles);
 
@@ -91,6 +111,7 @@ public class GameManager : MonoBehaviour
             {
                 if (!MoveTileDown(tiles, tile))
                 {
+                    checkRow(tiles, tile);
                     tile = CreateNewTile(tiles);
 
                     if (tile == null) break;
@@ -98,14 +119,6 @@ public class GameManager : MonoBehaviour
                 nextMove = nextMove - elapsedTime;
                 elapsedTime = 0;
                 
-            }
-            if(checkRow(tiles, tile))
-            {
-                tile = CreateNewTile(tiles);
-
-                if (tile == null) break;
-                nextMove = nextMove - elapsedTime;
-                elapsedTime = 0;
             }
             yield return null;
         }
@@ -145,6 +158,7 @@ public class GameManager : MonoBehaviour
     {
         var count = 0;
         var rainbow = 0;
+        var rewardScore = 500;
         bool[] checkList = new bool[tileColor.Count];
         checkList[cur.tileType] = true;
         List<int> idx = new List<int>();
@@ -169,6 +183,7 @@ public class GameManager : MonoBehaviour
         }
         if(rainbow == Width)
         {
+            rewardScore = 300;
             count = Width - 1;
         }
         if(count != Width - 1)
@@ -184,6 +199,7 @@ public class GameManager : MonoBehaviour
             }
         }
         Destroy(cur?.gameObject);
+        _removeRow.Play();
         foreach(Tile tile in tiles)
         {
             if(tile.Y > cur.Y)
@@ -194,6 +210,7 @@ public class GameManager : MonoBehaviour
         {
             tiles.RemoveAt(i);
         }
+        Score += rewardScore;
         return true;
     }
     private static void MoveTileLeft(IEnumerable<Tile> tiles, Tile tile)
